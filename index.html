@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI Interaktif: AI, ML, & Supervised Learning (Fase D)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .tab-active { border-bottom: 3px solid #3b82f6; color: #1d4ed8; font-weight: 700; }
+        .card-hover { transition: all 0.2s ease-in-out; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-500 p-2 rounded-lg text-white">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">MPI Koding & AI</h1>
+                    <p class="text-xs text-indigo-200">Fase D / Kelas 8 SMP — Machine Learning</p>
+                </div>
+            </div>
+            
+            <div id="user-info-bar" class="hidden flex items-center gap-4 text-sm bg-indigo-800/60 px-4 py-1.5 rounded-full border border-indigo-700">
+                <span class="flex items-center gap-1.5">
+                    <i data-lucide="user" class="w-4 h-4 text-indigo-300"></i>
+                    <strong id="bar-student-name">Siswa</strong> (<span id="bar-student-class">8A</span>)
+                </span>
+                <span class="text-indigo-400">|</span>
+                <button onclick="switchRole('teacher')" class="text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-2.5 py-1 rounded-md transition">
+                    Dashboard Guru
+                </button>
+            </div>
+        </div>
+        
+        <!-- PROGRESS BAR COMPONENT -->
+        <div id="global-progress-container" class="hidden bg-indigo-950 border-t border-indigo-800/50 px-4 py-2">
+            <div class="max-w-6xl mx-auto grid grid-cols-3 gap-4 text-xs">
+                <div>
+                    <div class="flex justify-between mb-1 text-indigo-200">
+                        <span>Pemahaman Materi</span>
+                        <span id="materi-pct">0%</span>
+                    </div>
+                    <div class="w-full bg-indigo-900 rounded-full h-1.5">
+                        <div id="materi-bar" class="bg-cyan-400 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1 text-indigo-200">
+                        <span>Aktivitas & Latihan</span>
+                        <span id="aktivitas-pct">0%</span>
+                    </div>
+                    <div class="w-full bg-indigo-900 rounded-full h-1.5">
+                        <div id="aktivitas-bar" class="bg-amber-400 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1 text-indigo-200">
+                        <span>Evaluasi Akhir</span>
+                        <span id="eval-pct">0%</span>
+                    </div>
+                    <div class="w-full bg-indigo-900 rounded-full h-1.5">
+                        <div id="eval-bar" class="bg-emerald-400 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+
+        <!-- 1. PAGE: LOGIN -->
+        <section id="page-1" class="page-step">
+            <div class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+                <div class="text-center mb-6">
+                    <div class="inline-block p-3 bg-indigo-100 text-indigo-700 rounded-full mb-3">
+                        <i data-lucide="sparkles" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Masuk ke MPI AI</h2>
+                    <p class="text-sm text-slate-500 mt-1">Masukkan identitasmu untuk mulai belajar</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
+                        <input type="text" id="login-nama" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Contoh: Budi Santoso">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kelas</label>
+                            <select id="login-kelas" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                <option value="8A">8A</option>
+                                <option value="8B">8B</option>
+                                <option value="8C">8C</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">No. Absen</label>
+                            <input type="number" id="login-absen" min="1" max="40" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="15">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span>Mulai Belajar</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </form>
+
+                <div class="mt-6 pt-4 border-t text-center">
+                    <button onclick="switchRole('teacher')" class="text-xs text-indigo-600 font-semibold hover:underline">
+                        Akses sebagai Guru / Dashboard Guru
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PAGE: WELCOME -->
+        <section id="page-2" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 text-center space-y-6">
+                <div class="p-4 bg-emerald-100 text-emerald-700 rounded-full inline-block">
+                    <i data-lucide="party-popper" class="w-12 h-12"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-slate-800">Selamat Datang, <span id="welcome-name" class="text-indigo-600">Siswa</span>! 👋</h2>
+                <p class="text-slate-600 max-w-lg mx-auto">
+                    Kamu akan menjelajahi dunia Kecerdasan Artifisial (AI), Machine Learning, dan bagaimana komputer belajar seperti manusia!
+                </p>
+                <div class="bg-indigo-50 p-4 rounded-xl text-left border border-indigo-100 max-w-md mx-auto space-y-2">
+                    <div class="flex items-center gap-2 font-bold text-indigo-900">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-600"></i>
+                        Petunjuk Belajar
+                    </div>
+                    <ul class="text-sm text-indigo-800 space-y-1 list-disc list-inside">
+                        <li>Ikuti materi secara bertahap.</li>
+                        <li>Cobalah simulasi dan latihan interaktifnya.</li>
+                        <li>Progress kamu akan tersimpan otomatis.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PAGE: LEARNING GOALS -->
+        <section id="page-3" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="flex items-center gap-3 border-b pb-4">
+                    <i data-lucide="target" class="w-8 h-8 text-indigo-600"></i>
+                    <h2 class="text-2xl font-bold text-slate-800">Tujuan Pembelajaran Hari Ini</h2>
+                </div>
+                <p class="text-slate-600">Setelah menyelesaikan modul interaktif ini, kamu akan mampu:</p>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="p-5 rounded-xl border border-indigo-100 bg-indigo-50/50 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">1</div>
+                        <h3 class="font-bold text-indigo-950">Hierarki Teknologi</h3>
+                        <p class="text-xs text-slate-600">Menjelaskan perbedaan serta hubungan antara AI, Machine Learning (ML), dan Deep Learning (DL).</p>
+                    </div>
+                    <div class="p-5 rounded-xl border border-indigo-100 bg-indigo-50/50 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">2</div>
+                        <h3 class="font-bold text-indigo-950">Supervised Learning</h3>
+                        <p class="text-xs text-slate-600">Memahami prinsip dasar Supervised Learning (pembelajaran terawasi) dengan data berlabel.</p>
+                    </div>
+                    <div class="p-5 rounded-xl border border-indigo-100 bg-indigo-50/50 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold">3</div>
+                        <h3 class="font-bold text-indigo-950">Aplikasi Nyata</h3>
+                        <p class="text-xs text-slate-600">Mengidentifikasi penerapan AI dalam kehidupan sehari-hari (Filter Spam, Rekomendasi YouTube, dll).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PAGE: APERSEPSI -->
+        <section id="page-4" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="flex items-center gap-3 border-b pb-4">
+                    <i data-lucide="brain-circuit" class="w-8 h-8 text-amber-500"></i>
+                    <h2 class="text-2xl font-bold text-slate-800">Pernahkah Kamu Mengalami Ini?</h2>
+                </div>
+
+                <p class="text-slate-700">
+                    Saat kamu sering menonton video rekomendasi game di YouTube, tiba-tiba beranda YouTube-mu penuh dengan video game sejenis. Bagaimana YouTube bisa tahu kesukaanmu?
+                </p>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+                    <h4 class="font-bold text-amber-900 text-sm">Pertanyaan Pemantik:</h4>
+                    <p class="text-sm text-amber-800 mt-1">Apakah ada manusia (pegawai YouTube) yang mengetikkan rekomendasi itu satu per satu untuk jutaan penonton?</p>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-sm font-semibold text-slate-700">Pilih jawabanmu:</p>
+                    <button onclick="checkApersepsi(true)" class="w-full text-left p-4 rounded-xl border hover:border-indigo-500 hover:bg-indigo-50 transition flex items-center justify-between">
+                        <span>Bukan manusia, tapi program komputer yang belajar dari kebiasaan kita!</span>
+                        <i data-lucide="circle-check" class="w-5 h-5 text-indigo-600"></i>
+                    </button>
+                    <button onclick="checkApersepsi(false)" class="w-full text-left p-4 rounded-xl border hover:border-indigo-500 hover:bg-indigo-50 transition flex items-center justify-between">
+                        <span>Ada tim ribuan staf yang memilihkan video satu per satu setiap detik.</span>
+                        <i data-lucide="circle-x" class="w-5 h-5 text-slate-400"></i>
+                    </button>
+                </div>
+
+                <div id="apersepsi-feedback" class="hidden p-4 rounded-xl text-sm font-semibold"></div>
+            </div>
+        </section>
+
+        <!-- 5. PAGE: INTRODUCTION MATERIAL -->
+        <section id="page-5" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b pb-4">Konsep Utama: Hubungan AI, ML, dan DL</h2>
+
+                <p class="text-slate-600">Bayangkan sebuah **Wadah Bersarang (Kotak di dalam Kotak)**:</p>
+
+                <!-- Visual Box Diagram -->
+                <div class="bg-indigo-900 text-white p-6 rounded-2xl space-y-4">
+                    <div class="border-2 border-indigo-400 p-4 rounded-xl bg-indigo-800/80">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-cyan-300">1. Artificial Intelligence (AI)</span>
+                            <span class="text-xs bg-indigo-700 px-2 py-1 rounded">Payung Terbesar</span>
+                        </div>
+                        <p class="text-xs text-indigo-100">Kemampuan mesin untuk menirukan kecerdasan manusia (misal: bermain catur, filter spam).</p>
+
+                        <div class="mt-4 border-2 border-amber-400 p-4 rounded-xl bg-amber-950/40">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-bold text-amber-300">2. Machine Learning (ML)</span>
+                                <span class="text-xs bg-amber-900 px-2 py-1 rounded">Bagian dari AI</span>
+                            </div>
+                            <p class="text-xs text-amber-100">AI yang belajar dari **data** tanpa diprogram aturan spesifik secara manual.</p>
+
+                            <div class="mt-4 border-2 border-emerald-400 p-4 rounded-xl bg-emerald-950/50">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-bold text-emerald-300">3. Deep Learning (DL)</span>
+                                    <span class="text-xs bg-emerald-900 px-2 py-1 rounded">Bagian dari ML</span>
+                                </div>
+                                <p class="text-xs text-emerald-100">ML tingkat lanjut menggunakan *Neural Network* (Jaringan Saraf Tiruan) untuk data rumit seperti foto & suara.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-600 border">
+                        <thead class="bg-slate-100 text-slate-800 uppercase font-bold">
+                            <tr>
+                                <th class="p-3 border">Istilah</th>
+                                <th class="p-3 border">Cara Kerja Ringkas</th>
+                                <th class="p-3 border">Contoh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-3 border font-bold text-indigo-600">AI</td>
+                                <td class="p-3 border">Aturan logika / program pintar.</td>
+                                <td class="p-3 border">Karakter musuh (Bot) di Game.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border font-bold text-amber-600">ML</td>
+                                <td class="p-3 border">Menganalisis pola dari data masa lalu.</td>
+                                <td class="p-3 border">Prediksi harga rumah, Filter Spam Email.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border font-bold text-emerald-600">DL</td>
+                                <td class="p-3 border">Jaringan saraf buatan mendeteksi fitur kompleks.</td>
+                                <td class="p-3 border">FaceID iPhone, Mobil Tanpa Pengemudi.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PAGE: INTERACTIVE CONTENT (SUPERVISED LEARNING) -->
+        <section id="page-6" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <h2 class="text-2xl font-bold text-slate-800 border-b pb-4">Apa itu Supervised Learning?</h2>
+
+                <p class="text-slate-600">
+                    **Supervised Learning** (Pembelajaran Terawasi) ibarat **anak sekolah yang belajar didampingi Guru**. Guru memberikan soal beserta **Kunci Jawaban (Label)** agar anak paham pola.
+                </p>
+
+                <!-- Interactive Diagram Steps -->
+                <div class="grid md:grid-cols-3 gap-3 text-center">
+                    <div class="p-4 bg-slate-50 rounded-xl border space-y-2">
+                        <div class="text-2xl">🍎 🍌</div>
+                        <h4 class="font-bold text-xs uppercase text-slate-500">1. Data Latihan (Input + Label)</h4>
+                        <p class="text-xs text-slate-600">Komputer diberi gambar Buah + Label namanya ("Apel", "Pisang").</p>
+                    </div>
+                    <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-200 space-y-2">
+                        <div class="text-2xl">⚙️ 🤖</div>
+                        <h4 class="font-bold text-xs uppercase text-indigo-600">2. Proses Pelatihan (Model)</h4>
+                        <p class="text-xs text-indigo-900">Komputer mempelajari ciri-ciri: Apel = Merah & Bulat, Pisang = Kuning & Panjang.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2">
+                        <div class="text-2xl">🔍 ❓</div>
+                        <h4 class="font-bold text-xs uppercase text-emerald-600">3. Uji Coba & Prediksi</h4>
+                        <p class="text-xs text-emerald-900">Komputer diberi gambar buah baru tanpa label, dan berhasil menebak namanya!</p>
+                    </div>
+                </div>
+
+                <div class="bg-sky-50 border border-sky-200 p-4 rounded-xl text-xs text-sky-900">
+                    <strong>Kunci Utama:</strong> Supervised Learning **WAJIB membutuhkan Dataset yang memiliki Label** (*Labeled Data*) saat masa latihan!
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. PAGE: GUIDED PRACTICE (MATCHING & SORTING) -->
+        <section id="page-7" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <h2 class="text-2xl font-bold text-slate-800">Latihan Terbimbing: Kelompokkan Teknologi!</h2>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-full">Aktivitas 1</span>
+                </div>
+
+                <p class="text-xs text-slate-500">Klik item di bawah ini untuk menentukan kategori teknologi yang tepat:</p>
+
+                <!-- Activity Items -->
+                <div id="sorting-container" class="space-y-4">
+                    <!-- Item 1 -->
+                    <div class="p-4 border rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50" id="sort-item-1">
+                        <div>
+                            <h4 class="font-bold text-sm">Face ID (Mengenali Wajah Pemilik HP)</h4>
+                            <p class="text-xs text-slate-500">Menggunakan Jaringan Saraf Tiruan mendeteksi struktur wajah.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="answerSort(1, 'AI', this)" class="px-3 py-1.5 text-xs font-semibold bg-white border rounded-lg hover:bg-indigo-50">AI Biasa</button>
+                            <button onclick="answerSort(1, 'ML', this)" class="px-3 py-1.5 text-xs font-semibold bg-white border rounded-lg hover:bg-indigo-50">Machine Learning</button>
+                            <button onclick="answerSort(1, 'DL', this)" class="px-3 py-1.5 text-xs font-semibold bg-white border rounded-lg hover:bg-indigo-50">Deep Learning</button>
+                        </div>
+                    </div>
+                    <!-- Feedback 1 -->
+                    <div id="sort-fb-1" class="hidden text-xs p-3 rounded-lg font-semibold"></div>
+
+                    <!-- Item 2 -->
+                    <div class="p-4 border rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-50" id="sort-item-2">
+                        <div>
+                            <h4 class="font-bold text-sm">Filter Email Spam</h4>
+                            <p class="text-xs text-slate-500">Mempelajari pola kata dari email spam masa lalu untuk memilah email baru.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="answerSort(2, 'AI', this)" class="px-3 py-1.5 text-xs font-semibold bg-white border rounded-lg hover:bg-indigo-50">AI Biasa</button>
+                            <button onclick="answerSort(2, 'ML', this)" class="px-3 py-1.5 text-xs font-semibold bg-white border rounded-lg hover:bg-indigo-50">Machine Learning</button>
+                            <button onclick="answerSort(2, 'DL', this)" class="px-3 py-1.5 text-xs font-semibold bg-white border rounded-lg hover:bg-indigo-50">Deep Learning</button>
+                        </div>
+                    </div>
+                    <!-- Feedback 2 -->
+                    <div id="sort-fb-2" class="hidden text-xs p-3 rounded-lg font-semibold"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. PAGE: APPLICATION ACTIVITY (SIMULATOR LABELLING) -->
+        <section id="page-8" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <h2 class="text-2xl font-bold text-slate-800">Praktik Simulasi: Latih AI Supervised Learning</h2>
+                    <span class="text-xs bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-full">Mini Lab</span>
+                </div>
+
+                <p class="text-xs text-slate-600">
+                    Bantu komputer ini membedakan mana **Kucing** dan mana **Anjing** dengan memberi **Label** pada data latihan!
+                </p>
+
+                <!-- Interactive Lab -->
+                <div class="bg-slate-900 text-white p-6 rounded-2xl space-y-4 text-center">
+                    <div class="text-5xl my-2" id="sim-image">🐱</div>
+                    <p class="text-xs text-slate-300">Gambar Data Ke-<span id="sim-step">1</span> dari 3</p>
+
+                    <div class="flex justify-center gap-4">
+                        <button onclick="labelData('Kucing')" class="bg-cyan-600 hover:bg-cyan-500 text-white px-5 py-2 rounded-xl font-bold text-sm transition">
+                            Labeli: Kucing 🐱
+                        </button>
+                        <button onclick="labelData('Anjing')" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2 rounded-xl font-bold text-sm transition">
+                            Labeli: Anjing 🐶
+                        </button>
+                    </div>
+                </div>
+
+                <div id="sim-result" class="hidden bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center space-y-2">
+                    <i data-lucide="check-circle-2" class="w-8 h-8 text-emerald-600 mx-auto"></i>
+                    <h4 class="font-bold text-emerald-900">Model Berhasil Dilatih!</h4>
+                    <p class="text-xs text-emerald-800">
+                        Kamu telah melatih AI menggunakan metode Supervised Learning! Sekarang AI siap memprediksi gambar baru secara otomatis.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. PAGE: ASSESSMENT -->
+        <section id="page-9" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="border-b pb-4 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-slate-800">Evaluasi Akhir Pembelajaran</h2>
+                    <span class="text-xs bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full">3 Soal Formatif</span>
+                </div>
+
+                <form id="quiz-form" onsubmit="submitQuiz(event)" class="space-y-6">
+                    <!-- Soal 1 -->
+                    <div class="space-y-2">
+                        <p class="font-bold text-sm text-slate-800">1. Manakah pernyataan yang BENAR mengenai hubungan AI, Machine Learning (ML), dan Deep Learning (DL)?</p>
+                        <div class="space-y-1.5 text-xs text-slate-700">
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q1" value="A" required> A. ML berada di luar cakupan AI
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q1" value="B"> B. DL adalah bagian dari ML, dan ML adalah bagian dari AI
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q1" value="C"> C. AI, ML, dan DL adalah tiga nama berbeda untuk hal yang persis sama
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Soal 2 -->
+                    <div class="space-y-2">
+                        <p class="font-bold text-sm text-slate-800">2. Ciri utama dari metode Supervised Learning adalah...</p>
+                        <div class="space-y-1.5 text-xs text-slate-700">
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q2" value="A" required> A. Komputer belajar tanpa data sama sekali
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q2" value="B"> B. Menggunakan data yang sudah diberi label kunci jawaban saat latihan
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q2" value="C"> C. Menggunakan robot fisik untuk mengawasi komputer
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Soal 3 -->
+                    <div class="space-y-2">
+                        <p class="font-bold text-sm text-slate-800">3. Contoh penerapan Machine Learning dalam aplikasi media sosial sehari-hari adalah...</p>
+                        <div class="space-y-1.5 text-xs text-slate-700">
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q3" value="A" required> A. Layar HP yang menyala saat tombol power ditekan
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q3" value="B"> B. Rekomendasi konten video di TikTok / Instagram yang sesuai minatmu
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 border rounded-lg cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="q3" value="C"> C. Mengambil foto screenshot layar HP
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition">
+                        Kirim Jawaban Evaluasi
+                    </button>
+                </form>
+
+                <!-- Result Box -->
+                <div id="quiz-result" class="hidden bg-slate-50 border p-6 rounded-2xl space-y-4">
+                    <h3 class="font-extrabold text-lg text-slate-800 border-b pb-2">Hasil Evaluasi Kamu</h3>
+                    <div class="grid grid-cols-4 gap-2 text-center">
+                        <div class="bg-white p-3 rounded-xl border">
+                            <span class="text-xs text-slate-500">Skor Akhir</span>
+                            <div id="res-score" class="text-xl font-black text-indigo-600">0</div>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border">
+                            <span class="text-xs text-slate-500">Benar</span>
+                            <div id="res-correct" class="text-xl font-black text-emerald-600">0</div>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border">
+                            <span class="text-xs text-slate-500">Salah</span>
+                            <div id="res-wrong" class="text-xl font-black text-rose-600">0</div>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border">
+                            <span class="text-xs text-slate-500">Status</span>
+                            <div id="res-status" class="text-xs font-bold text-indigo-600 mt-2">Selesai</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. PAGE: REFLECTION -->
+        <section id="page-10" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="border-b pb-4 flex items-center gap-2">
+                    <i data-lucide="message-square-heart" class="w-6 h-6 text-indigo-600"></i>
+                    <h2 class="text-2xl font-bold text-slate-800">Refleksi Belajar Siswa</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Bagaimana pemahamanmu terhadap materi hari ini?</label>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="refl_level" value="Saya memahami konsep utama." checked>
+                                <span>Saya sangat memahami konsep utama AI, ML, dan Supervised Learning.</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="refl_level" value="Saya dapat menerapkan konsep.">
+                                <span>Saya memahami dan dapat menerapkan/mengenali contohnya di kehidupan nyata.</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-slate-50">
+                                <input type="radio" name="refl_level" value="Saya masih membutuhkan latihan.">
+                                <span>Saya masih agak bingung dan butuh latihan tambahan.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">2. Satu hal paling penting yang saya pelajari hari ini adalah...</label>
+                        <textarea id="refl-text" rows="3" class="w-full p-3 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Tuliskan rangkuman singkat menurut bahasamu sendiri..."></textarea>
+                    </div>
+
+                    <button onclick="submitReflection()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
+                        Simpan Refleksi & Lanjut
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. PAGE: COMPLETION PAGE -->
+        <section id="page-11" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 text-center space-y-6">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+                    <i data-lucide="award" class="w-10 h-10"></i>
+                </div>
+
+                <h2 class="text-3xl font-black text-slate-800">Luar Biasa, Pembelajaran Selesai! 🎉</h2>
+                <p class="text-sm text-slate-600 max-w-md mx-auto">
+                    Seluruh aktivitas, latihan, dan nilai evaluasi kamu telah berhasil disimpan secara permanen ke sistem.
+                </p>
+
+                <div class="p-4 bg-slate-50 rounded-xl max-w-sm mx-auto text-left text-xs space-y-2 border">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Siswa:</span>
+                        <strong id="summary-student">-</strong>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Nilai Evaluasi:</span>
+                        <strong id="summary-score" class="text-emerald-600">-</strong>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Status Belajar:</span>
+                        <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">Lengkap (100%)</span>
+                    </div>
+                </div>
+
+                <button onclick="switchRole('teacher')" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl text-xs transition">
+                    Lihat Dashboard Guru (Pantau Data)
+                </button>
+            </div>
+        </section>
+
+        <!-- 12. PAGE: TEACHER DASHBOARD -->
+        <section id="page-12" class="page-step hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-slate-100 space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b pb-4 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 flex items-center gap-2">
+                            <i data-lucide="layout-dashboard" class="w-7 h-7 text-indigo-600"></i>
+                            TEACHER DASHBOARD
+                        </h2>
+                        <p class="text-xs text-slate-500">Pemantauan aktivitas dan nilai pembelajaran siswa secara real-time</p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="loadTeacherDashboard()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh Data
+                        </button>
+                        <button onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1">
+                            <i data-lucide="download" class="w-4 h-4"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Metrics Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+                        <span class="text-xs text-indigo-600 font-bold uppercase">Total Siswa</span>
+                        <div id="dash-total-students" class="text-2xl font-extrabold text-indigo-950 mt-1">0</div>
+                    </div>
+                    <div class="p-4 bg-cyan-50 border border-cyan-100 rounded-xl">
+                        <span class="text-xs text-cyan-600 font-bold uppercase">Siswa Login</span>
+                        <div id="dash-total-login" class="text-2xl font-extrabold text-cyan-950 mt-1">0</div>
+                    </div>
+                    <div class="p-4 bg-amber-50 border border-amber-100 rounded-xl">
+                        <span class="text-xs text-amber-600 font-bold uppercase">Sedang Belajar</span>
+                        <div id="dash-in-progress" class="text-2xl font-extrabold text-amber-950 mt-1">0</div>
+                    </div>
+                    <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+                        <span class="text-xs text-emerald-600 font-bold uppercase">Selesai</span>
+                        <div id="dash-completed" class="text-2xl font-extrabold text-emerald-950 mt-1">0</div>
+                    </div>
+                    <div class="p-4 bg-purple-50 border border-purple-100 rounded-xl col-span-2 md:col-span-1">
+                        <span class="text-xs text-purple-600 font-bold uppercase">Rata-Rata Nilai</span>
+                        <div id="dash-avg-score" class="text-2xl font-extrabold text-purple-950 mt-1">0</div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="grid md:grid-cols-3 gap-3 pt-2">
+                    <input type="text" id="dash-search" oninput="filterDashboardTable()" placeholder="Cari nama siswa..." class="px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <select id="dash-filter-kelas" onchange="filterDashboardTable()" class="px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="ALL">Semua Kelas</option>
+                        <option value="8A">Kelas 8A</option>
+                        <option value="8B">Kelas 8B</option>
+                        <option value="8C">Kelas 8C</option>
+                    </select>
+                    <select id="dash-filter-status" onchange="filterDashboardTable()" class="px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="ALL">Semua Status</option>
+                        <option value="Selesai">Selesai</option>
+                        <option value="Sedang Belajar">Sedang Belajar</option>
+                    </select>
+                </div>
+
+                <!-- Table Data Actual -->
+                <div class="overflow-x-auto border rounded-xl">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 text-slate-700 font-bold uppercase border-b">
+                            <tr>
+                                <th class="p-3">Nama</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3">Waktu Login</th>
+                                <th class="p-3">Progress</th>
+                                <th class="p-3">Nilai</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Aktivitas Terakhir</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dash-table-body" class="divide-y text-slate-600">
+                            <!-- Rows dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER NAV BUTTONS -->
+    <footer id="nav-footer" class="hidden bg-white border-t py-3 px-4 sticky bottom-0 z-40">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <button id="btn-back" onclick="navigateStep(-1)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+            </button>
+            <span id="page-indicator" class="text-xs font-bold text-slate-400">Halaman 2 / 11</span>
+            <button id="btn-next" onclick="navigateStep(1)" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition">
+                Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- APP ENGINE SCRIPT -->
+    <script>
+        // State Management Global & Database Simulation
+        let currentStep = 1;
+        const totalSteps = 11;
+        let activeStudent = null;
+
+        // Inisialisasi Database Lokal jika belum ada
+        function initDatabase() {
+            if (!localStorage.getItem('mpi_students')) {
+                // Pre-seed 2 data siswa contoh untuk pengujian awal dashboard guru
+                const defaultStudents = [
+                    { id: 'STD_001', nama: 'Siti Aminah', kelas: '8A', nomor_absen: '12', created_at: '2026-10-09 07:30', last_login: '2026-10-09 07:30' },
+                    { id: 'STD_002', nama: 'Rizky Pratama', kelas: '8B', nomor_absen: '08', created_at: '2026-10-09 07:45', last_login: '2026-10-09 07:45' }
+                ];
+                const defaultProgress = [
+                    { student_id: 'STD_001', lesson_id: 'AI_01', current_section: 'Completion Page', progress_percentage: 100, status: 'Selesai' },
+                    { student_id: 'STD_002', lesson_id: 'AI_01', current_section: 'Interactive Content', progress_percentage: 50, status: 'Sedang Belajar' }
+                ];
+                const defaultActivities = [
+                    { student_id: 'STD_001', activity_name: 'Sorting AI/ML/DL', score: 100, attempts: 1, completed_at: '2026-10-09 07:35' },
+                    { student_id: 'STD_002', activity_name: 'Sorting AI/ML/DL', score: 50, attempts: 1, completed_at: '2026-10-09 07:50' }
+                ];
+                const defaultEvaluation = [
+                    { student_id: 'STD_001', score: 100, percentage: 100, submitted_at: '2026-10-09 07:42' }
+                ];
+                
+                localStorage.setItem('mpi_students', JSON.stringify(defaultStudents));
+                localStorage.setItem('mpi_progress', JSON.stringify(defaultProgress));
+                localStorage.setItem('mpi_activities', JSON.stringify(defaultActivities));
+                localStorage.setItem('mpi_evaluation', JSON.stringify(defaultEvaluation));
+                localStorage.setItem('mpi_reflection', JSON.stringify([]));
+            }
+        }
+
+        // Initialize Icons
+        window.addEventListener('DOMContentLoaded', () => {
+            initDatabase();
+            lucide.createIcons();
+            updateUI();
+        });
+
+        // Handler Login Siswa
+        function handleLogin(e) {
+            e.preventDefault();
+            const nama = document.getElementById('login-nama').value.trim();
+            const kelas = document.getElementById('login-kelas').value;
+            const absen = document.getElementById('login-absen').value;
+
+            const students = JSON.parse(localStorage.getItem('mpi_students'));
+            const progress = JSON.parse(localStorage.getItem('mpi_progress'));
+
+            // Cek apakah siswa pernah terdaftar
+            let student = students.find(s => s.nama.toLowerCase() === nama.toLowerCase() && s.kelas === kelas);
+            const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+
+            if (!student) {
+                student = {
+                    id: 'STD_' + Date.now(),
+                    nama: nama,
+                    kelas: kelas,
+                    nomor_absen: absen,
+                    created_at: now,
+                    last_login: now
+                };
+                students.push(student);
+                localStorage.setItem('mpi_students', JSON.stringify(students));
+
+                // Init progress awal
+                progress.push({
+                    student_id: student.id,
+                    lesson_id: 'AI_01',
+                    current_section: 'Welcome Page',
+                    progress_percentage: 10,
+                    status: 'Sedang Belajar'
+                });
+                localStorage.setItem('mpi_progress', JSON.stringify(progress));
+            } else {
+                student.last_login = now;
+                localStorage.setItem('mpi_students', JSON.stringify(students));
+            }
+
+            activeStudent = student;
+            document.getElementById('welcome-name').innerText = student.nama;
+            document.getElementById('bar-student-name').innerText = student.nama;
+            document.getElementById('bar-student-class').innerText = student.kelas;
+
+            // Pindah ke Welcome Page
+            navigateStep(1);
+        }
+
+        // Navigasi Langkah (Pages 1 - 12)
+        function navigateStep(direction) {
+            if (currentStep + direction < 1) return;
+            
+            currentStep += direction;
+            if (currentStep > 12) currentStep = 12;
+
+            updateUI();
+            saveStudentProgress();
+        }
+
+        function updateUI() {
+            // Sembunyikan semua halaman
+            document.querySelectorAll('.page-step').forEach(el => el.classList.add('hidden'));
+
+            // Tampilkan halaman aktif
+            const activePage = document.getElementById(`page-${currentStep}`);
+            if (activePage) activePage.classList.remove('hidden');
+
+            // Header & Progress Bar Visibility
+            const headerBar = document.getElementById('user-info-bar');
+            const progressContainer = document.getElementById('global-progress-container');
+            const navFooter = document.getElementById('nav-footer');
+
+            if (currentStep === 1 || currentStep === 12) {
+                // Login atau Dashboard Guru
+                headerBar.classList.add('hidden');
+                progressContainer.classList.add('hidden');
+                navFooter.classList.add('hidden');
+            } else {
+                headerBar.classList.remove('hidden');
+                progressContainer.classList.remove('hidden');
+                navFooter.classList.remove('hidden');
+                document.getElementById('page-indicator').innerText = `Halaman ${currentStep} / ${totalSteps}`;
+            }
+
+            // Update bar persentase
+            if (currentStep > 1 && currentStep <= 11) {
+                const materiPct = Math.min(Math.round(((currentStep - 1) / 5) * 100), 100);
+                const aktivPct = currentStep >= 7 ? Math.min(Math.round(((currentStep - 6) / 2) * 100), 100) : 0;
+                const evalPct = currentStep >= 9 ? Math.min(Math.round(((currentStep - 8) / 3) * 100), 100) : 0;
+
+                document.getElementById('materi-bar').style.width = materiPct + '%';
+                document.getElementById('materi-pct').innerText = materiPct + '%';
+
+                document.getElementById('aktivitas-bar').style.width = aktivPct + '%';
+                document.getElementById('aktivitas-pct').innerText = aktivPct + '%';
+
+                document.getElementById('eval-bar').style.width = evalPct + '%';
+                document.getElementById('eval-pct').innerText = evalPct + '%';
+            }
+
+            // Atur tombol Next/Back
+            document.getElementById('btn-back').disabled = (currentStep <= 2);
+            if (currentStep === 11) {
+                document.getElementById('btn-next').innerText = 'Selesai';
+            } else {
+                document.getElementById('btn-next').innerHTML = 'Next <i data-lucide="chevron-right" class="w-4 h-4"></i>';
+            }
+
+            if (currentStep === 12) loadTeacherDashboard();
+
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Simpan progress ke database
+        function saveStudentProgress() {
+            if (!activeStudent) return;
+
+            const progressList = JSON.parse(localStorage.getItem('mpi_progress'));
+            const pIdx = progressList.findIndex(p => p.student_id === activeStudent.id);
+
+            const sectionNames = ["Login", "Welcome", "Goals", "Apersepsi", "Intro Material", "Interactive Content", "Guided Practice", "Application", "Assessment", "Reflection", "Completion"];
+            const pct = Math.round((currentStep / 11) * 100);
+            const status = currentStep === 11 ? 'Selesai' : 'Sedang Belajar';
+
+            if (pIdx !== -1) {
+                progressList[pIdx].current_section = sectionNames[currentStep - 1] || 'Learning';
+                progressList[pIdx].progress_percentage = pct;
+                progressList[pIdx].status = status;
+            }
+
+            localStorage.setItem('mpi_progress', JSON.stringify(progressList));
+        }
+
+        // Interaksi Page 4: Apersepsi
+        function checkApersepsi(isCorrect) {
+            const fb = document.getElementById('apersepsi-feedback');
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if (isCorrect) {
+                fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                fb.innerText = "Tepat sekali! Komputer menggunakan Machine Learning untuk mempelajari kebiasaan menontonmu secara otomatis tanpa perlu diatur manusia secara manual.";
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-800');
+                fb.innerText = "Kurang tepat. Tidak ada manusia yang sanggup mengatur miliaran rekomendasi setiap detik. Program Machine Learning-lah yang mengerjakannya!";
+            }
+        }
+
+        // Interaksi Page 7: Latihan Terbimbing
+        function answerSort(itemNum, choice, btnElem) {
+            const fb = document.getElementById(`sort-fb-${itemNum}`);
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+            let isCorrect = false;
+            let explanation = "";
+
+            if (itemNum === 1) {
+                if (choice === 'DL') { isCorrect = true; explanation = "Benar! Face ID menggunakan Deep Learning (Neural Network) untuk mendeteksi kontur wajah 3D."; }
+                else { explanation = "Coba lagi. Face ID memproses data visual rumit dengan jaringan saraf tiruan (Deep Learning)."; }
+            } else if (itemNum === 2) {
+                if (choice === 'ML') { isCorrect = true; explanation = "Benar! Filter spam mempelajari pola kata dari data email berlabel (Spam / Lainnya)."; }
+                else { explanation = "Coba lagi. Filter spam merupakan contoh klasik dari Machine Learning terawasi."; }
+            }
+
+            if (isCorrect) {
+                fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                fb.innerText = explanation;
+                
+                // Record activity
+                saveActivity('Sorting Activity ' + itemNum, 100);
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-800');
+                fb.innerText = explanation;
+            }
+        }
+
+        // Interaksi Page 8: Application Lab
+        let simCount = 1;
+        function labelData(label) {
+            simCount++;
+            if (simCount <= 3) {
+                document.getElementById('sim-step').innerText = simCount;
+                document.getElementById('sim-image').innerText = simCount === 2 ? '🐶' : '🐱';
+            } else {
+                document.getElementById('sim-result').classList.remove('hidden');
+                saveActivity('Simulator Supervised Learning', 100);
+            }
+        }
+
+        function saveActivity(actName, score) {
+            if (!activeStudent) return;
+            const acts = JSON.parse(localStorage.getItem('mpi_activities'));
+            acts.push({
+                student_id: activeStudent.id,
+                activity_name: actName,
+                score: score,
+                attempts: 1,
+                completed_at: new Date().toISOString().replace('T', ' ').substring(0, 16)
+            });
+            localStorage.setItem('mpi_activities', JSON.stringify(acts));
+        }
+
+        // Interaksi Page 9: Quiz Evaluasi Formatif
+        function submitQuiz(e) {
+            e.preventDefault();
+            const form = document.getElementById('quiz-form');
+            const q1 = form.q1.value;
+            const q2 = form.q2.value;
+            const q3 = form.q3.value;
+
+            let correct = 0;
+            if (q1 === 'B') correct++;
+            if (q2 === 'B') correct++;
+            if (q3 === 'B') correct++;
+
+            const score = Math.round((correct / 3) * 100);
+
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-wrong').innerText = 3 - correct;
+            document.getElementById('quiz-result').classList.remove('hidden');
+
+            // Simpan Evaluasi ke Database
+            if (activeStudent) {
+                const evals = JSON.parse(localStorage.getItem('mpi_evaluation'));
+                evals.push({
+                    student_id: activeStudent.id,
+                    score: score,
+                    percentage: score,
+                    submitted_at: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                });
+                localStorage.setItem('mpi_evaluation', JSON.stringify(evals));
+
+                document.getElementById('summary-student').innerText = activeStudent.nama;
+                document.getElementById('summary-score').innerText = score + " / 100";
+            }
+        }
+
+        // Interaksi Page 10: Refleksi
+        function submitReflection() {
+            const level = document.querySelector('input[name="refl_level"]:checked').value;
+            const text = document.getElementById('refl-text').value.trim();
+
+            if (activeStudent) {
+                const refls = JSON.parse(localStorage.getItem('mpi_reflection'));
+                refls.push({
+                    student_id: activeStudent.id,
+                    understanding_level: level,
+                    key_learning: text
+                });
+                localStorage.setItem('mpi_reflection', JSON.stringify(refls));
+            }
+
+            navigateStep(1); // Ke Completion Page
+        }
+
+        // Switch role Antara Siswa & Teacher Dashboard
+        function switchRole(role) {
+            if (role === 'teacher') {
+                currentStep = 12;
+            } else {
+                currentStep = 1;
+            }
+            updateUI();
+        }
+
+        // TEACHER DASHBOARD LOGIC (Membaca Data Aktual)
+        function loadTeacherDashboard() {
+            const students = JSON.parse(localStorage.getItem('mpi_students')) || [];
+            const progress = JSON.parse(localStorage.getItem('mpi_progress')) || [];
+            const evaluation = JSON.parse(localStorage.getItem('mpi_evaluation')) || [];
+            const activities = JSON.parse(localStorage.getItem('mpi_activities')) || [];
+
+            // Update Metrics Cards
+            document.getElementById('dash-total-students').innerText = students.length;
+            document.getElementById('dash-total-login').innerText = students.length;
+
+            const completedCount = progress.filter(p => p.status === 'Selesai').length;
+            const inProgressCount = students.length - completedCount;
+
+            document.getElementById('dash-completed').innerText = completedCount;
+            document.getElementById('dash-in-progress').innerText = Math.max(0, inProgressCount);
+
+            const totalScore = evaluation.reduce((acc, curr) => acc + curr.score, 0);
+            const avgScore = evaluation.length > 0 ? Math.round(totalScore / evaluation.length) : 0;
+            document.getElementById('dash-avg-score').innerText = avgScore;
+
+            // Render Table Rows
+            renderDashboardRows(students, progress, evaluation, activities);
+        }
+
+        function renderDashboardRows(students, progress, evaluation, activities) {
+            const tbody = document.getElementById('dash-table-body');
+            tbody.innerHTML = '';
+
+            students.forEach(st => {
+                const p = progress.find(pr => pr.student_id === st.id) || { progress_percentage: 0, status: 'Belum', current_section: '-' };
+                const ev = evaluation.find(e => e.student_id === st.id) || { score: '-' };
+                const actList = activities.filter(a => a.student_id === st.id);
+                const lastAct = actList.length > 0 ? actList[actList.length - 1].activity_name : p.current_section;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition';
+                tr.setAttribute('data-nama', st.nama.toLowerCase());
+                tr.setAttribute('data-kelas', st.kelas);
+                tr.setAttribute('data-status', p.status);
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">${st.nama}</td>
+                    <td class="p-3">${st.kelas}</td>
+                    <td class="p-3 text-slate-400">${st.last_login}</td>
+                    <td class="p-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 bg-slate-200 h-1.5 rounded-full">
+                                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${p.progress_percentage}%"></div>
+                            </div>
+                            <span class="text-xs font-semibold">${p.progress_percentage}%</span>
+                        </div>
+                    </td>
+                    <td class="p-3 font-bold ${ev.score >= 70 ? 'text-emerald-600' : 'text-amber-600'}">${ev.score}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded text-xs font-bold ${p.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                            ${p.status}
+                        </span>
+                    </td>
+                    <td class="p-3 text-slate-500">${lastAct}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filtering Table Dashboard
+        function filterDashboardTable() {
+            const search = document.getElementById('dash-search').value.toLowerCase();
+            const filterKelas = document.getElementById('dash-filter-kelas').value;
+            const filterStatus = document.getElementById('dash-filter-status').value;
+
+            const rows = document.querySelectorAll('#dash-table-body tr');
+            rows.forEach(tr => {
+                const nama = tr.getAttribute('data-nama');
+                const kelas = tr.getAttribute('data-kelas');
+                const status = tr.getAttribute('data-status');
+
+                const matchNama = nama.includes(search);
+                const matchKelas = (filterKelas === 'ALL' || kelas === filterKelas);
+                const matchStatus = (filterStatus === 'ALL' || status === filterStatus);
+
+                if (matchNama && matchKelas && matchStatus) {
+                    tr.classList.remove('hidden');
+                } else {
+                    tr.classList.add('hidden');
+                }
+            });
+        }
+
+        // Export CSV Functionality
+        function exportCSV() {
+            const students = JSON.parse(localStorage.getItem('mpi_students')) || [];
+            const progress = JSON.parse(localStorage.getItem('mpi_progress')) || [];
+            const evaluation = JSON.parse(localStorage.getItem('mpi_evaluation')) || [];
+
+            let csvContent = "data:text/csv;charset=utf-8,ID,Nama,Kelas,No Absen,Login Terakhir,Progress (%),Nilai,Status\n";
+
+            students.forEach(st => {
+                const p = progress.find(pr => pr.student_id === st.id) || { progress_percentage: 0, status: 'Belum' };
+                const ev = evaluation.find(e => e.student_id === st.id) || { score: 0 };
+                csvContent += `${st.id},"${st.nama}",${st.kelas},${st.nomor_absen},${st.last_login},${p.progress_percentage},${ev.score},${p.status}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Laporan_Progress_MPI_AI_Kelas8.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
